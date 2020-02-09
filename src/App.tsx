@@ -2,13 +2,13 @@ import React from 'react'
 
 import './App.css'
 
-// import CounterClass from './components/2CounterClass'
-import UseStateWithArray from './components/5UseStateWithArray'
+import HookCounter from './components/7HookCounter'
+// import ClassCounter from './components/7ClassCounter'
 
 const App = () => {
   return (
     <div className="App">
-      <UseStateWithArray />
+      <HookCounter />
     </div>
   )
 }
