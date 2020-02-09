@@ -2,13 +2,14 @@ import React from 'react'
 
 import './App.css'
 
-import HookCounter from './components/7HookCounter'
-// import ClassCounter from './components/7ClassCounter'
+// import RunEffectsOnlyOnce from './components/9RunEffectsOnlyOnce'
+
+import MouseContainer from './components/10MouseContainer'
 
 const App = () => {
   return (
     <div className="App">
-      <HookCounter />
+      <MouseContainer />
     </div>
   )
 }
