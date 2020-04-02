@@ -2,18 +2,12 @@ import React from 'react'
 
 import './App.css'
 
-// import RunEffectsOnlyOnce from './components/9RunEffectsOnlyOnce'
-// import MouseContainer from './components/10MouseContainer'
-
-import IntervalCounter from './components/11Counter'
-import IntervalCounterHooks from './components/11IntervalCouterHooks'
-
+import FetchData from './components/12FetchData'
 
 const App = () => {
   return (
     <div className="App">
-      <IntervalCounter />
-      <IntervalCounterHooks />
+      <FetchData />
     </div>
   )
 }
