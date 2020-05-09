@@ -2,12 +2,16 @@ import React from 'react'
 
 import './App.css'
 
-import FetchData from './components/12FetchData'
+import ComponentC from './components/16ComponentC'
+
+export const UserContext = React.createContext('')
 
 const App = () => {
   return (
     <div className="App">
-      <FetchData />
+      <UserContext.Provider value={'chuanshi'}>
+        <ComponentC />
+      </UserContext.Provider>
     </div>
   )
 }
