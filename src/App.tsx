@@ -5,12 +5,15 @@ import './App.css'
 import ComponentC from './components/16ComponentC'
 
 export const UserContext = React.createContext('')
+export const ChannelContext = React.createContext('')
 
 const App = () => {
   return (
     <div className="App">
       <UserContext.Provider value={'chuanshi'}>
-        <ComponentC />
+        <ChannelContext.Provider value={'code volution'}>
+          <ComponentC />
+        </ChannelContext.Provider>
       </UserContext.Provider>
     </div>
   )

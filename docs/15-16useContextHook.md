@@ -217,3 +217,68 @@ export default ComponentF
 
 ### 多个 Context 情况
 
+我们在 App.tsx 中再增加一个 Context
+
+``` tsx
+import React from 'react'
+
+import './App.css'
+
+import ComponentC from './components/16ComponentC'
+
+export const UserContext = React.createContext('')
+export const ChannelContext = React.createContext('')
+
+const App = () => {
+  return (
+    <div className="App">
+      <UserContext.Provider value={'chuanshi'}>
+        <ChannelContext.Provider value={'code volution'}>
+          <ComponentC />
+        </ChannelContext.Provider>
+      </UserContext.Provider>
+    </div>
+  )
+}
+
+export default App
+```
+
+接下来在 component F 中消费它们
+
+``` tsx
+import React from 'react'
+
+import { UserContext, ChannelContext } from '../App'
+
+function ComponentF() {
+  return (
+    <div>
+      <UserContext.Consumer>
+        {
+          (user) => (
+            <ChannelContext.Consumer>
+              {
+                (channel) => (
+                  <div>
+                    User context value {user}, channel value {channel}
+                  </div>
+                )
+              }
+            </ChannelContext.Consumer>
+
+          )
+        }
+      </UserContext.Consumer>
+    </div>
+  )
+}
+
+export default ComponentF
+```
+
+页面展示如下
+
+![](https://gw.alicdn.com/tfs/TB1XC47Fvb2gK0jSZK9XXaEgFXa-453-183.png)
+
+虽然代码运行没有问题，但是美观性和可读性都不太好，如果使用多个 Context，有个更好的方法，就是使用 Context hook 来解决消费多个 Context 的代码优雅问题。

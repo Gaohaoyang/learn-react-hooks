@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { UserContext } from '../App'
+import { UserContext, ChannelContext } from '../App'
 
 function ComponentF() {
   return (
@@ -8,9 +8,16 @@ function ComponentF() {
       <UserContext.Consumer>
         {
           (user) => (
-            <div>
-              User context value {user}
-            </div>
+            <ChannelContext.Consumer>
+              {
+                (channel) => (
+                  <div>
+                    User context value {user}, channel value {channel}
+                  </div>
+                )
+              }
+            </ChannelContext.Consumer>
+
           )
         }
       </UserContext.Consumer>
