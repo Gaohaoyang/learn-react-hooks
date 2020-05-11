@@ -282,3 +282,54 @@ export default ComponentF
 ![](https://gw.alicdn.com/tfs/TB1XC47Fvb2gK0jSZK9XXaEgFXa-453-183.png)
 
 虽然代码运行没有问题，但是美观性和可读性都不太好，如果使用多个 Context，有个更好的方法，就是使用 Context hook 来解决消费多个 Context 的代码优雅问题。
+
+## useContext
+
+举个例子，我们在上述的 demo 中的 component E 中通过 `useContext` 使用根节点创建的 Context。分为以下步骤
+
+1. 从 react 对象中 import `useContext` 这个 hook api
+2. import 根节点创建的 Context 对象（可以导入多个）
+3. 执行 `useContext()` 方法，将 Context 传入
+
+ComponentE 完整代码:
+
+``` tsx
+import React, { useContext } from 'react'
+
+import ComponentF from './16ComponentF'
+import {UserContext, ChannelContext} from '../App'
+
+function ComponentE() {
+  const user = useContext(UserContext)
+  const channel = useContext(ChannelContext)
+  return (
+    <div>
+      <ComponentF />
+      --- <br/>
+      {user} - {channel}
+    </div>
+  )
+}
+
+export default ComponentE
+```
+
+页面展示如下
+
+![](https://gw.alicdn.com/tfs/TB1NnVuFUT1gK0jSZFhXXaAtVXa-453-224.png)
+
+其关键的一行代码如下
+
+``` js
+const value = useContext(MyContext)
+```
+
+> useContext 方法接收一个 context 对象（`React.createContext` 的返回值）并返回该 context 的当前值。当前的 context 值由上层组件中距离当前组件最近的 `<MyContext.Provider>` 的 `value` prop 决定。
+>
+> 当组件上层最近的 `<MyContext.Provider>` 更新时，该 Hook 会触发重渲染，并使用最新传递给 `MyContext` provider 的 context `value` 值。即使祖先使用 `React.memo` 或 `shouldComponentUpdate`，也会在组件本身使用 `useContext` 时重新渲染。
+>
+> 可以理解为，`useContext(MyContext)` 相当于 class 组件中的 `static contextType = MyContext` 或者 `<MyContext.Consumer>`。
+>
+> `useContext(MyContext)` 只是让你能够读取 context 的值以及订阅 context 的变化。你仍然需要在上层组件树中使用 `<MyContext.Provider>` 来为下层组件提供 context。
+
+至此，关于 useContext hook api 我们已经掌握了使用方式，可以看到通过 useContext 可以极大的减小多个 Context 使用的代码复杂的问题。
