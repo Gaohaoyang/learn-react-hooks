@@ -140,7 +140,7 @@ export default App
 
 这里我们不能将 useEffect 的第二个参数设置为空数组，而是 `[count]`。
 
-更好的方案是
+当然还有另一种解决方案，如下
 
 ``` js
 setCount(count + 1)
