@@ -440,7 +440,7 @@ export default CounterTwo
 
 ## multiple useReducers
 
-如果有多个 state 可以，但 state 变化的方式又是相同的时候，可以多次使用 useReducer。
+如果有多个 state，但 state 变化的方式又是相同的时候，可以多次使用 useReducer。
 
 CounterThree.tsx
 
@@ -721,10 +721,226 @@ export default F
 
 1. 页面载入时请求数据
 2. 请求数据中展示 loading 状态
-3. 请求返回后移除 loading 样式，展示请求的数据；若请求失败，也移除 loading 展示错误提示。
+3. 请求返回后移除 loading 样式，展示请求的数据；若请求失败，也移除 loading 展示错误提示
 
 我们将分别使用 useState 和 useReducer 来实现，并对比其中的区别。
 
 ### useState 实现请求
 
+App.tsx
+
+``` tsx
+import React from 'react'
+import './App.css'
+
+import DataFetchingOne from './components/23DataFetchingOne'
+
+const App = () => {
+  return (
+    <div className="App">
+      <DataFetchingOne />
+    </div>
+  )
+}
+
+export default App
+```
+
+DataFetchingOne.tsx
+
+``` tsx
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+
+interface postType {
+  userId: number
+  id: number
+  title: string
+  body: string
+}
+
+function DataFetchingOne() {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [post, setPost] = useState({} as postType)
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/posts/1').then((res) => {
+      setLoading(false)
+      setPost(res.data)
+      setError('')
+    }).catch(() => {
+      setLoading(false)
+      setPost({} as postType)
+      setError('something went wrong')
+    })
+  }, [])
+
+  return (
+    <div>
+      {
+        loading
+          ? 'Loading...'
+          : post.title
+      }
+      {
+        error
+          ? error
+          : null
+      }
+    </div>
+  )
+}
+
+export default DataFetchingOne
+```
+
+页面效果如下
+
+![](https://gw.alicdn.com/tfs/TB1Gg8wFYr1gK0jSZR0XXbP8XXa-557-209.gif)
+
+我们故意改错一个 axios 请求的链接，可以看到如下进入错误的逻辑。
+
+![](https://gw.alicdn.com/tfs/TB1kHNxFYr1gK0jSZFDXXb9yVXa-557-209.gif)
+
+注意到在这个实现中，我们使用了3个useState去控制 loading, post 和 error，接下来看看如何使用 useReducer 实现。
+
 ### useReducer 实现请求
+
+App.tsx
+
+``` tsx
+import React from 'react'
+import './App.css'
+
+import DataFetchingOne from './components/23DataFetchingOne'
+
+const App = () => {
+  return (
+    <div className="App">
+      <DataFetchingOne />
+    </div>
+  )
+}
+
+export default App
+```
+
+``` tsx
+import React, { useEffect, useReducer } from 'react'
+import axios from 'axios'
+
+interface postType {
+  userId: number
+  id: number
+  title: string
+  body: string
+}
+
+type stateType = {
+  loading: boolean
+  error: string
+  post?: postType | {}
+}
+
+type actionType = {
+  type: 'FETCH_SUCCESS' | 'FETCH_ERROR'
+  payload?: postType | {}
+}
+
+const initialState = {
+  loading: true,
+  error: '',
+  post: {},
+}
+
+const reducer = (state: stateType, action: actionType) => {
+  switch (action.type) {
+    case 'FETCH_SUCCESS':
+      return {
+        loading: false,
+        error: '',
+        post: action.payload,
+      }
+    case 'FETCH_ERROR':
+      return {
+        loading: false,
+        error: 'something went wrong',
+        post: {},
+      }
+    default:
+      return state
+  }
+}
+
+function DataFetchingTwo() {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/posts/1').then((res) => {
+      dispatch({
+        type: 'FETCH_SUCCESS',
+        payload: res.data,
+      })
+    }).catch(() => {
+      dispatch({
+        type: 'FETCH_ERROR'
+      })
+    })
+  }, [])
+
+  return (
+    <div>
+      {
+        state.loading
+          ? 'Loading...'
+          // @ts-ignore
+          : state.post.title
+      }
+      {
+        state.error
+          ? state.error
+          : null
+      }
+    </div>
+  )
+}
+
+export default DataFetchingTwo
+```
+
+页面展示效果与上一个例子相同
+
+![](https://gw.alicdn.com/tfs/TB1Gg8wFYr1gK0jSZR0XXbP8XXa-557-209.gif)
+
+可以看到，我们将 state 集合在了一起，在同一个对象，修改 state 的逻辑也聚合在了一起，即 reducer 函数中的 switch 部分。
+
+至此你可能会好奇，什么时候该用 useState 什么时候该用 useReducer，我们继续往下看。
+
+## useState vs useReducer
+
+- 如果 state 的类型为 Number, String, Boolean 建议使用 useState，如果 state 的类型 为 Object 或 Array，建议使用 useReducer
+- 如果 state 变化非常多，也是建议使用 useReducer，集中管理 state 变化，便于维护
+- 如果 state 关联变化，建议使用 useReducer
+- 业务逻辑如果很复杂，也建议使用 useReducer
+- 如果 state 只想用在 组件内部，建议使用 useState，如果想维护全局 state 建议使用 useReducer
+
+Scenario | useState | useReducer
+--- | --- | ---
+Type of state | Number, String, Boolean | Object or Array
+Number of state transitions | 1 or 2 | Too many
+Related state transitions | No | Yes
+Business logic | No business logic | Complex business logic
+local vs global | local | global
+
+## 小结
+
+本章主要讲述了 useReducer 的使用方法。从 JavaScript 中的 reduce api 开始，对比说明了什么是 useReducer。
+
+学习了 useReducer 的简单状态的使用，复杂状态的使用，以及多个 useReducer 的使用。
+
+掌握了组件嵌套多层时使用 useContext 加 useReducer 完成子组件修改全局state的方法，代码更优雅，可维护性更高。
+
+通过对比 useState，学习了如何使用 useEffect 加 useReducer 请求数据，并控制 loading 状态的显示隐藏。
+
+最后对比了 useState 和 useReducer，并给出了使用建议。
