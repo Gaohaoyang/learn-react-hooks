@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { UserContext, ChannelContext } from '../App'
+// import { UserContext, ChannelContext } from '../App'
 
 function ComponentF() {
   return (
     <div>
-      <UserContext.Consumer>
+      {/* <UserContext.Consumer>
         {
           (user) => (
             <ChannelContext.Consumer>
@@ -20,7 +20,7 @@ function ComponentF() {
 
           )
         }
-      </UserContext.Consumer>
+      </UserContext.Consumer> */}
     </div>
   )
 }
