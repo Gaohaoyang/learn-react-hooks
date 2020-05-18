@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
 
-import DataFetchingOne from './components/23DataFetchingOne'
+import ParentComponent from './components/26ParentComponenet'
 
 const App = () => {
   return (
     <div className="App">
-      <DataFetchingOne />
+      <ParentComponent />
     </div>
   )
 }
