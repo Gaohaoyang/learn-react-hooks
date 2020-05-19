@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
 
-import ParentComponent from './components/26ParentComponenet'
+import Counter from './components/27.Counter'
 
 const App = () => {
   return (
     <div className="App">
-      <ParentComponent />
+      <Counter />
     </div>
   )
 }
