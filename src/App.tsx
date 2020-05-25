@@ -1,12 +1,12 @@
 import React from 'react'
 import './App.css'
 
-import Counter from './components/27.Counter'
+import FocusInput from './components/28FocusInput'
 
 const App = () => {
   return (
     <div className="App">
-      <Counter />
+      <FocusInput />
     </div>
   )
 }
