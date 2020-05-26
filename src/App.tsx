@@ -1,12 +1,15 @@
 import React from 'react'
 import './App.css'
 
-import FocusInput from './components/28FocusInput'
+import ClassTimer from './components/29ClassTimer'
+import HookTimer from './components/29HookTimer'
 
 const App = () => {
   return (
     <div className="App">
-      <FocusInput />
+      <ClassTimer />
+      <hr />
+      <HookTimer />
     </div>
   )
 }

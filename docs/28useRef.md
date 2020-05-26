@@ -81,3 +81,143 @@ Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法�
 更多关于 refs 和 Dom 的相关信息可以访问 React 官网 [Refs and the DOM](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html)
 
 下面我们再来学习一下 useRef 在另一个场景的使用。
+
+## 可以停止的计时器示例
+
+需求是页面上有一个每隔1秒自动加一的计时器，并且有个按钮，点击后计时器停止，先使用 Class 组件完成这样的需求
+
+### Class 组件示例
+
+ClassTimer.tsx
+
+``` tsx
+import React, { Component } from 'react'
+
+export default class ClassTimer extends Component<{}, { timer: number }> {
+  interval!: number
+  constructor(props: Readonly<{}>) {
+    super(props)
+    this.state = {
+      timer: 0
+    }
+  }
+
+  componentDidMount() {
+    this.interval = window.setInterval(() => {
+      this.setState(prevState => ({
+        timer: prevState.timer + 1
+      }))
+    }, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
+  }
+
+  render() {
+    return (
+      <div>
+        Timer - {this.state.timer}
+        <br/>
+        <button
+          onClick={() => {
+            clearInterval(this.interval)
+          }}
+        >Clear Timer</button>
+      </div>
+    )
+  }
+}
+```
+
+App.tsx
+
+``` tsx
+import React from 'react'
+import './App.css'
+
+import ClassTimer from './components/29ClassTimer'
+
+const App = () => {
+  return (
+    <div className="App">
+      <ClassTimer />
+    </div>
+  )
+}
+
+export default App
+```
+
+页面展示如下
+
+![](https://gw.alicdn.com/tfs/TB1J31IHHr1gK0jSZFDXXb9yVXa-437-179.gif)
+
+### Function 组件示例
+
+HookTimer.tsx
+
+``` tsx
+import React, { useState, useEffect, useRef } from 'react'
+
+function HookTimer() {
+  const [timer, setTimer] = useState(0)
+
+  //  @ts-ignore
+  const intervalRef = useRef(null) as { current: number }
+
+  useEffect(() => {
+    intervalRef.current = window.setInterval(() => {
+      setTimer(pre => pre + 1)
+    }, 1000)
+    return () => {
+      clearInterval(intervalRef.current)
+    }
+  }, [])
+  return (
+    <div>
+      HookTimer - {timer}
+      <br />
+      <button
+        onClick={() => {
+          clearInterval(intervalRef.current)
+        }}
+      >Clear Hook Timer</button>
+    </div>
+  )
+}
+
+export default HookTimer
+```
+
+App.tsx
+
+``` tsx
+import React from 'react'
+import './App.css'
+
+import ClassTimer from './components/29ClassTimer'
+import HookTimer from './components/29HookTimer'
+
+const App = () => {
+  return (
+    <div className="App">
+      <ClassTimer />
+      <hr />
+      <HookTimer />
+    </div>
+  )
+}
+
+export default App
+```
+
+页面展示如下
+
+![](https://gw.alicdn.com/tfs/TB1v51OHQL0gK0jSZFxXXXWHVXa-437-227.gif)
+
+这就是 useRef 的第二种用法，可以用它创建一个通用的容器，用来保存变量。
+
+## 小结
+
+本章我们学习了 useRef 的两种用法：一是让我们允许访问 Dom 节点；二是成为一个容器，用来缓存变量。第二种用法较为少见，需要多加注意，遇到类似的场景可以尝试使用。
